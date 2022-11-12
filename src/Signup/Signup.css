@@ -6,3 +6,7 @@
 .field-container {
   margin-bottom: 20px;
 }
+
+.salary-error-message {
+  color: red;
+}

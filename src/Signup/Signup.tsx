@@ -15,6 +15,8 @@ const SignUp: React.FC<{}> = () => {
   const [aboutMe, setAboutMe] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [salary, setSalary] = useState<string>(''); // note this will hold only valid value that is number
+  const [isErrorInSalary, setIsErrorInSalary] = useState<boolean>(false);
+  const [salaryErrorMessage, setSalaryErrorMessage] = useState<string>('');
 
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -82,8 +84,40 @@ const SignUp: React.FC<{}> = () => {
   };
 
   const salaryChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (isErrorInSalary) {
+      if (event.target.validity.valid) {
+        setIsErrorInSalary(false);
+      } else {
+        if (event.target.validity.valueMissing) {
+          setSalaryErrorMessage('salary is mandatory field');
+        } else if (event.target.validity.patternMismatch) {
+          setSalaryErrorMessage('only numbers are allowed in salary field');
+        } else {
+          setSalaryErrorMessage('enter correct salary');
+        }
+      }
+    }
     const value = event.target.value;
     setSalary(value);
+  };
+
+  const salaryBlurHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+    if (!isErrorInSalary) {
+      if (!event.target.validity.valid) {
+        setIsErrorInSalary(true);
+        event.target.focus();
+      }
+    }
+
+    if (!event.target.validity.valid) {
+      if (event.target.validity.valueMissing) {
+        setSalaryErrorMessage('salary is mandatory field');
+      } else if (event.target.validity.patternMismatch) {
+        setSalaryErrorMessage('only numbers are allowed in salary field');
+      } else {
+        setSalaryErrorMessage('enter correct salary');
+      }
+    }
   };
 
   return (
@@ -234,10 +268,17 @@ const SignUp: React.FC<{}> = () => {
                 inputMode="decimal" // ADDED
                 name="salary"
                 value={salary}
+                pattern="[1-9][0-9]*"
                 onChange={salaryChangeHandler}
+                onBlur={salaryBlurHandler}
                 required
               />
             </label>
+            {isErrorInSalary && (
+              <span role="alert" className="salary-error-message">
+                {salaryErrorMessage}
+              </span>
+            )}
           </fieldset>
         </div>
         <div className="field-container">

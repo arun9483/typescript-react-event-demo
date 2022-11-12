@@ -7,6 +7,9 @@
   margin-bottom: 20px;
 }
 
+.error {
+  background-color: rgba(255, 0, 0, 0.5);
+}
 .salary-error-message {
   color: red;
 }

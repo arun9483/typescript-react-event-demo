@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 
 import './Signup.css';
 
@@ -17,6 +18,8 @@ const SignUp: React.FC<{}> = () => {
   const [salary, setSalary] = useState<string>(''); // note this will hold only valid value that is number
   const [isErrorInSalary, setIsErrorInSalary] = useState<boolean>(false);
   const [salaryErrorMessage, setSalaryErrorMessage] = useState<string>('');
+  const [showSalaryErrorMessage, setShowSalaryErrorMessage] =
+    useState<boolean>(false);
 
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -87,6 +90,7 @@ const SignUp: React.FC<{}> = () => {
     if (isErrorInSalary) {
       if (event.target.validity.valid) {
         setIsErrorInSalary(false);
+        setShowSalaryErrorMessage(false);
       } else {
         if (event.target.validity.valueMissing) {
           setSalaryErrorMessage('salary is mandatory field');
@@ -105,18 +109,30 @@ const SignUp: React.FC<{}> = () => {
     if (!isErrorInSalary) {
       if (!event.target.validity.valid) {
         setIsErrorInSalary(true);
+        setShowSalaryErrorMessage(true);
         event.target.focus();
       }
+    }
+
+    if (isErrorInSalary) {
+      setShowSalaryErrorMessage(false);
     }
 
     if (!event.target.validity.valid) {
       if (event.target.validity.valueMissing) {
         setSalaryErrorMessage('salary is mandatory field');
+        //Note other invalid test cases can also be added in another else-if block same as done for patternMismatch
       } else if (event.target.validity.patternMismatch) {
         setSalaryErrorMessage('only numbers are allowed in salary field');
       } else {
         setSalaryErrorMessage('enter correct salary');
       }
+    }
+  };
+
+  const salaryFocusHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+    if (isErrorInSalary) {
+      setShowSalaryErrorMessage(true);
     }
   };
 
@@ -271,10 +287,12 @@ const SignUp: React.FC<{}> = () => {
                 pattern="[1-9][0-9]*"
                 onChange={salaryChangeHandler}
                 onBlur={salaryBlurHandler}
+                onFocus={salaryFocusHandler}
                 required
+                className={classNames(isErrorInSalary ? 'error' : '')}
               />
             </label>
-            {isErrorInSalary && (
+            {showSalaryErrorMessage && (
               <span role="alert" className="salary-error-message">
                 {salaryErrorMessage}
               </span>

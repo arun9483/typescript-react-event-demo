@@ -14,6 +14,7 @@ const SignUp: React.FC<{}> = () => {
   const [phone, setPhone] = useState<string>('');
   const [aboutMe, setAboutMe] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+  const [salary, setSalary] = useState<string>(''); // note this will hold only valid value that is number
 
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -78,6 +79,11 @@ const SignUp: React.FC<{}> = () => {
   const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setEmail(value);
+  };
+
+  const salaryChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setSalary(value);
   };
 
   return (
@@ -219,6 +225,22 @@ const SignUp: React.FC<{}> = () => {
           </fieldset>
         </div>
         <div className="field-container">
+          <fieldset>
+            <legend>Salary</legend>
+            <label>
+              <span>salary</span>
+              <input
+                type="text" // it should be number type but user should not be annoyed that's why text type is chosen
+                inputMode="decimal" // ADDED
+                name="salary"
+                value={salary}
+                onChange={salaryChangeHandler}
+                required
+              />
+            </label>
+          </fieldset>
+        </div>
+        <div className="field-container">
           <input type="submit" value="Save" />
         </div>
       </form>
@@ -234,6 +256,8 @@ const SignUp: React.FC<{}> = () => {
         <div>
           <p>{aboutMe}</p>
         </div>
+        <div>Email: {email}</div>
+        <div>Salary: {salary}</div>
       </div>
     </section>
   );

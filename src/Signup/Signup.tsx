@@ -212,6 +212,7 @@ const SignUp: React.FC<{}> = () => {
                 onFocus={firstNameFocusHandler}
                 className={classNames(isErrorInFirstName ? 'error' : '')}
               />
+              <span className="validity"></span>
             </label>{' '}
             {showFirstNameErrorMessage && (
               <span role="alert" className="salary-error-message">
@@ -261,7 +262,6 @@ const SignUp: React.FC<{}> = () => {
                 type="date"
                 name="dob"
                 value={dob.slice(0, 10)}
-                required
                 onChange={dobChangeHandler}
               />
             </label>
@@ -285,11 +285,7 @@ const SignUp: React.FC<{}> = () => {
             <legend>Languages</legend>
             <label>
               <span>Language selector</span>
-              <select
-                name="languages"
-                required
-                onChange={languageChangeHandler}
-              >
+              <select name="languages" onChange={languageChangeHandler}>
                 <option value="" disabled>
                   Select Language(s)
                 </option>
@@ -306,7 +302,14 @@ const SignUp: React.FC<{}> = () => {
             <legend>Phone number</legend>
             <label>
               <span>mobile</span>
-              <input type="tel" name="phone" onChange={phoneChangeHandler} />
+              <input
+                type="text"
+                name="phone"
+                onChange={phoneChangeHandler}
+                inputMode="decimal"
+                pattern="^[6-9]\d{9}$"
+                required
+              />
             </label>
           </fieldset>
         </div>
@@ -345,7 +348,7 @@ const SignUp: React.FC<{}> = () => {
               <span>salary</span>
               <input
                 type="text" // it should be number type but user should not be annoyed that's why text type is chosen
-                inputMode="decimal" // ADDED
+                inputMode="decimal"
                 name="salary"
                 value={salary}
                 pattern="[1-9][0-9]*"
@@ -367,21 +370,6 @@ const SignUp: React.FC<{}> = () => {
           <input type="submit" value="Save" />
         </div>
       </form>
-      <div className="form-data">
-        <div>
-          Full name: {firstName} {lastName}
-        </div>
-        <div>Gender: {gender ? gender : 'nothing selected'}</div>
-        <div>Dob: {new Date(dob).toLocaleDateString()}</div>
-        <div>Is news letter subscribe: {subscription ? 'Yes' : 'No'}</div>
-        <div>Language: {language}</div>
-        <div>Phone: {phone}</div>
-        <div>
-          <p>{aboutMe}</p>
-        </div>
-        <div>Email: {email}</div>
-        <div>Salary: {salary}</div>
-      </div>
     </section>
   );
 };

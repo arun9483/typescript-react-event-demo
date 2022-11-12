@@ -10,6 +10,17 @@
 .error {
   background-color: rgba(255, 0, 0, 0.5);
 }
+
+input:invalid + span::after {
+  content: '✖';
+  padding-left: 5px;
+}
+
+input:valid + span::after {
+  content: '✓';
+  padding-left: 5px;
+}
+
 .salary-error-message {
   color: red;
 }

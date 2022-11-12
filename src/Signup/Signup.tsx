@@ -13,6 +13,7 @@ const SignUp: React.FC<{}> = () => {
   const [language, setLanguage] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [aboutMe, setAboutMe] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
 
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -74,6 +75,11 @@ const SignUp: React.FC<{}> = () => {
     setAboutMe(value);
   };
 
+  const emailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setEmail(value);
+  };
+
   return (
     <section className="sign-up-container">
       <h2>Fill registration form</h2>
@@ -86,6 +92,7 @@ const SignUp: React.FC<{}> = () => {
               <input
                 type="text"
                 name="firstName"
+                minLength={2}
                 value={firstName}
                 required
                 onChange={firstNameChangeHandler}
@@ -192,6 +199,21 @@ const SignUp: React.FC<{}> = () => {
                 className="about-me-text-area"
                 name="aboutMe"
                 onChange={aboutMeChangeHandler}
+              />
+            </label>
+          </fieldset>
+        </div>
+        <div className="field-container">
+          <fieldset>
+            <legend>Email</legend>
+            <label>
+              <span>email</span>
+              <input
+                type="email"
+                name="email"
+                value={email}
+                onChange={emailChangeHandler}
+                required
               />
             </label>
           </fieldset>

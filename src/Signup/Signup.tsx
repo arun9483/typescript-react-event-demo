@@ -7,6 +7,12 @@ type Gender = 'male' | 'female' | undefined;
 
 const SignUp: React.FC<{}> = () => {
   const [firstName, setFirstName] = useState<string>('');
+  const [isErrorInFirstName, setIsErrorInFirstName] = useState<boolean>(false);
+  const [firstNameErrorMessage, setFirstNameErrorMessage] =
+    useState<string>('');
+  const [showFirstNameErrorMessage, setShowFirstNameErrorMessage] =
+    useState<boolean>(false);
+
   const [lastName, setLastName] = useState<string>('');
   const [gender, setGender] = useState<Gender>(undefined);
   const [dob, setDob] = useState<string>(new Date().toISOString());
@@ -36,8 +42,58 @@ const SignUp: React.FC<{}> = () => {
   const firstNameChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    if (isErrorInFirstName) {
+      if (event.target.validity.valid) {
+        setIsErrorInFirstName(false);
+        setShowFirstNameErrorMessage(false);
+      } else {
+        if (event.target.validity.valueMissing) {
+          setFirstNameErrorMessage('first name is mandatory field');
+          //Note other invalid test cases can also be added in another else-if block same as done for patternMismatch
+        } else if (event.target.validity.tooShort) {
+          setFirstNameErrorMessage(
+            'first name should have at-least 2 characters'
+          );
+        } else {
+          setFirstNameErrorMessage('enter correct first name');
+        }
+      }
+    }
     const value = event.target.value;
     setFirstName(value);
+  };
+
+  const firstNameBlurHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+    if (!isErrorInFirstName) {
+      if (!event.target.validity.valid) {
+        setIsErrorInFirstName(true);
+        setShowFirstNameErrorMessage(true);
+        event.target.focus();
+      }
+    }
+
+    if (isErrorInFirstName) {
+      setShowFirstNameErrorMessage(false);
+    }
+
+    if (!event.target.validity.valid) {
+      if (event.target.validity.valueMissing) {
+        setFirstNameErrorMessage('first name is mandatory field');
+        //Note other invalid test cases can also be added in another else-if block same as done for patternMismatch
+      } else if (event.target.validity.tooShort) {
+        setFirstNameErrorMessage(
+          'first name should have at-least 2 characters'
+        );
+      } else {
+        setFirstNameErrorMessage('enter correct first name');
+      }
+    }
+  };
+
+  const firstNameFocusHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+    if (isErrorInFirstName) {
+      setShowFirstNameErrorMessage(true);
+    }
   };
 
   const lastNameChangeHandler = (event: React.FormEvent<HTMLInputElement>) => {
@@ -152,8 +208,16 @@ const SignUp: React.FC<{}> = () => {
                 value={firstName}
                 required
                 onChange={firstNameChangeHandler}
+                onBlur={firstNameBlurHandler}
+                onFocus={firstNameFocusHandler}
+                className={classNames(isErrorInFirstName ? 'error' : '')}
               />
             </label>{' '}
+            {showFirstNameErrorMessage && (
+              <span role="alert" className="salary-error-message">
+                {firstNameErrorMessage}
+              </span>
+            )}
             <label>
               <span>Last Name </span>
               <input

@@ -1,6 +1,8 @@
 import React from 'react';
 
-import SignUp from './Signup/Signup';
+// import SignUp from './Signup/Signup';
+// import MyForm from './form-validation/MyForm';
+import FormDemo from './form-demo/FormDemo';
 import './App.css';
 
 function App() {
@@ -8,7 +10,7 @@ function App() {
     <div className="App">
       <h1>My App</h1>
       <hr />
-      <SignUp />
+      <FormDemo />
     </div>
   );
 }

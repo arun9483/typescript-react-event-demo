@@ -16,9 +16,8 @@ div > label {
   display: block;
 }
 
-input[type='email'] {
+input.mail {
   appearance: none;
-
   width: 100%;
   border: 1px solid #333;
   margin: 0;
@@ -30,12 +29,12 @@ input[type='email'] {
 }
 
 /* This is our style for the invalid fields */
-input:invalid {
+input.invalid {
   border-color: #900;
   background-color: #fdd;
 }
 
-input:focus:invalid {
+input:focus.invalid {
   outline: none;
 }
 
@@ -48,6 +47,9 @@ input:focus:invalid {
   color: white;
   background-color: #900;
   border-radius: 0 0 5px 5px;
-
   box-sizing: border-box;
+}
+
+.error.active {
+  padding: 0.3em;
 }

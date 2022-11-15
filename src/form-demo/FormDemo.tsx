@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import SalaryInput from './SalaryInput';
+import EmailInput from './EmailInput';
 import './FormDemo.css';
 
 interface FormElements extends HTMLFormControlsCollection {
   salary: HTMLInputElement;
+  email: HTMLInputElement;
 }
 
 interface DemoFormElement extends HTMLFormElement {
@@ -10,75 +13,40 @@ interface DemoFormElement extends HTMLFormElement {
 }
 
 const FormDemo: React.FC<{}> = () => {
-  const [salary, setSalary] = useState<string>('');
-  const [salaryErrorMessage, setSalaryErrorMessage] = useState<string>('');
-  const [showSalaryErrorMessage, setShowSalaryErrorMessage] =
-    useState<boolean>(false);
-  const [isSalaryError, setIsSalaryError] = useState<boolean>(false);
-
-  const setSalaryError = (
-    inputElement: HTMLInputElement,
-    serverSentError?: string
-  ) => {
-    if (!inputElement.validity.valid) {
-      if (inputElement.validity.valueMissing) {
-        setSalaryErrorMessage('Salary is mandatory filed');
-      } else if (inputElement.validity.rangeUnderflow) {
-        setSalaryErrorMessage('Salary should be at-least 1000');
-      } else if (inputElement.validity.rangeOverflow) {
-        setSalaryErrorMessage('Salary should not be more than 10000000');
-      } else if (inputElement.validity.badInput) {
-        setSalaryErrorMessage('Only numbers are allowed in Salary');
-      }
-    } else {
-      if (serverSentError) {
-        setSalaryErrorMessage(serverSentError);
-      }
-    }
-  };
-  const salaryChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (isSalaryError) {
-      if (event.target.validity.valid) {
-        setIsSalaryError(false);
-        setShowSalaryErrorMessage(false);
-        setSalaryErrorMessage('');
-      }
-    }
-    setSalary(event.target.value);
-  };
-
-  const salaryBlurHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (isSalaryError) {
-      setShowSalaryErrorMessage(false);
-    } else {
-      if (!event.target.validity.valid) {
-        setIsSalaryError(true);
-        //set here message here
-        setSalaryError(event.target);
-        setShowSalaryErrorMessage(true);
-        event.target.focus();
-      }
-    }
-  };
-
-  const salaryFocusHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (isSalaryError) {
-      setShowSalaryErrorMessage(true);
-    }
-  };
-
   const submitHandler = (event: React.FormEvent<DemoFormElement>) => {
+    console.log('form submit handler invoked');
     event.preventDefault();
+    let isFormValid = true;
     const form = event.currentTarget;
-    const salary = form.elements.salary;
-    if (!salary.validity.valid) {
-      setIsSalaryError(true);
-      //set here message here
-      setSalaryError(salary);
-      setShowSalaryErrorMessage(true);
-      salary.focus();
-    } else {
-      console.log('salary is: ', salary.value);
+    console.log('form.elements', form.elements);
+    if (isFormValid) {
+      const salary = form.elements['salary'];
+      if (!salary.validity.valid) {
+        console.error('invalid salary');
+        isFormValid = false;
+        // display salary error
+      } else {
+        console.log('salary is: ', salary.value);
+      }
+    }
+
+    if (isFormValid) {
+      const email = form.elements['email'];
+      if (!email.validity.valid) {
+        console.error('invalid email');
+        isFormValid = false;
+        // display salary error
+      } else {
+        console.log('email id is: ', email.value);
+      }
+    }
+
+    if (isFormValid) {
+      const formData = new FormData(form);
+      // form controls key-value pair object
+      const fieldValues = Object.fromEntries(formData.entries());
+      console.log('fieldValues: ', fieldValues);
+      // note fieldValues v=can be sent in POST call as body
     }
   };
 
@@ -86,30 +54,8 @@ const FormDemo: React.FC<{}> = () => {
     <div className="form-container">
       <form onSubmit={submitHandler} noValidate>
         <div className="field">
-          <label htmlFor="salary">
-            <span>Please enter your salary:</span>
-            <input
-              type="number"
-              step={1}
-              id="salary"
-              name="salary"
-              inputMode="decimal"
-              required
-              min={1000}
-              max={10000}
-              value={salary}
-              onChange={salaryChangeHandler}
-              onFocus={salaryFocusHandler}
-              onBlur={salaryBlurHandler}
-            />
-          </label>
-          {showSalaryErrorMessage && (
-            <span className="error" role="alert" aria-live="polite">
-              {salaryErrorMessage}
-            </span>
-          )}
-        </div>
-        <div className="field">
+          <SalaryInput />
+          <EmailInput />
           <button>Submit</button>
         </div>
       </form>
